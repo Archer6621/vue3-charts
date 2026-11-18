@@ -20,6 +20,8 @@
   "scripts": {
     "dev": "vite",
     "serve": "vite",
+    "prepack": "npm run build",
+    "prepare": "npm run build",
     "build": "vite build",
     "lint": "eslint .",
     "typecheck": "vue-tsc --noEmit",
