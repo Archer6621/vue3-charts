@@ -42,6 +42,10 @@ export default defineComponent({
       type: Object as PropType<Rectangle | null>,
       default: null
     },
+    stacked: {
+      type: Boolean,
+      default: undefined
+    },
     barStyle: {
       type: [Function, Object] as PropType<StyleProp<BarStyleArgs>>,
       required: false
@@ -65,10 +69,13 @@ export default defineComponent({
   },
   setup(props, { emit }) {
     const mouse = useMouse()
-    const { stacked = false, maxWidth = -1 } = inject<LayerProps>('layerProps', {})
+    const layerProps = inject<LayerProps>('layerProps', { stacked: false } )
+
+    const isStacked = props.stacked !== undefined ? props.stacked : layerProps.stacked
+
     const { bars } = useBars(props.dataKeys, {
-      maxWidth: Math.max(props.maxWidth, maxWidth),
-      stacked,
+      maxWidth: Math.max(props.maxWidth, layerProps.maxWidth ?? -1),
+      stacked: isStacked,
       gap: props.gap,
       type: 'bar'
     })

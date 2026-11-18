@@ -42,14 +42,10 @@ export default (dataKeys: [string, string], options: BarsOptions = {}): BarsRetu
     const width = maxWidth > -1 ? Math.min(available, maxWidth) : available
     const barLayers = chart.getLayers(type)
 
-    return barLayers.length > 0 && !stacked ? width / barLayers.length : width
+    return barLayers.length > 0  ? 2 * width / barLayers.length : width
   }
 
   function getDiffWidth() {
-    if (stacked) {
-      return 0
-    }
-
     const { bandScale } = scales()
     const max = bandScale.bandwidth() - gap
     const total = chart.getLayers(type).length * getBarWidth()
@@ -62,13 +58,20 @@ export default (dataKeys: [string, string], options: BarsOptions = {}): BarsRetu
     const barSize = getBarWidth()
     const diff = getDiffWidth()
 
+    let acc = 0;
+    let idx = 0;
+    const bars = chart.getLayers(type);
+
     return values.map((val) => {
       const rect: Rectangle = { x: 0, y: 0, width: 0, height: 0, props: { values: [...val], data: val.data } }
       const xVal = bandScale.at(val.data[key])
       const [yVal0, yVal1] = linearScale.map([...val])
 
+      if (bars[idx].props.stacked) acc = 0;
+
       if (chart.config.direction === 'horizontal') {
-        rect.y = Math.min(yVal0, yVal1)
+        rect.y = acc + Math.min(yVal0, yVal1)
+        acc+=rect.y;
         rect.height = Math.abs(yVal0 - yVal1)
 
         rect.x = diff + xVal + index * barSize + gap / 2
@@ -80,6 +83,7 @@ export default (dataKeys: [string, string], options: BarsOptions = {}): BarsRetu
         rect.y = diff + xVal + index * barSize + gap / 2
         rect.height = barSize
       }
+      idx++
       return rect
     })
   }
