@@ -21,6 +21,10 @@ export default defineComponent({
     dataKeys: {
       type: Object as () => [string, string],
       required: true
+    },
+    stacked: {
+      type: Boolean,
+      default: undefined
     }
   },
   setup(props) {
@@ -29,7 +33,7 @@ export default defineComponent({
     const extraProps = inject<LayerProps>('layerProps', {})
 
     onMounted(() => {
-      chart.addLayer({ id, type: props.type, dataKeys: props.dataKeys, props: extraProps })
+      chart.addLayer({ id, type: props.type, dataKeys: props.dataKeys, props: {stacked: props.stacked} })
     })
 
     onUnmounted(() => {

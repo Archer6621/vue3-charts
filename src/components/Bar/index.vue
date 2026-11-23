@@ -1,5 +1,5 @@
 <template>
-  <Layer :dataKeys="dataKeys" type="bar">
+  <Layer :dataKeys="dataKeys" type="bar" :stacked="stacked">
     <text v-if="bars.length === 0">No Data</text>
     <rect
       v-for="(bar, i) in bars"
@@ -45,6 +45,10 @@ export default defineComponent({
     barStyle: {
       type: [Function, Object] as PropType<StyleProp<BarStyleArgs>>,
       required: false
+    },
+    stacked: {
+      type: Boolean,
+      default: undefined
     },
     barStyleSelected: {
       type: [Function, Object] as PropType<StyleProp<SeriesProps>>,
